@@ -1,0 +1,32 @@
+{
+  "name": "devpulse",
+  "version": "1.0.0",
+  "description": "A collaborative platform for software teams to report bugs, suggest features, and coordinate resolutions. An internal issue and feature tracker Express API",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch ./src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashfaqshuvo007/DevPulse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ashfaqshuvo007/DevPulse/issues"
+  },
+  "homepage": "https://github.com/ashfaqshuvo007/DevPulse#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
