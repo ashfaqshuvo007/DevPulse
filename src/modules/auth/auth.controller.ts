@@ -5,13 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 const login = async (req: Request, res: Response) => {
   try {
     const result = await authService.loginUser(req.body);
-    // const { refreshToken } = result;
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   secure: false,
-    //   httpOnly: true,
-    //   sameSite: "lax",
-    // });
+    delete result.user.password;
 
     res.status(201).json({
       success: true,
