@@ -12,3 +12,13 @@ export const ISSUE_STATUS = {
 } as const;
 
 export type STATUS = "open" | "in_progress" | "resolved";
+
+export type QueryParams = {
+  sort?: "newest" | "oldest";
+  type?: "bug" | "feature_request";
+  status?: "open" | "in_progress" | "resolved";
+};
+
+export type SortIssues = "newest" | "oldest";
+export type IssueType = "bug" | "feature_request";
+export type IssueStatus = "open" | "in_progress" | "resolved";

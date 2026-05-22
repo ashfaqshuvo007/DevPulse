@@ -1,16 +1,17 @@
 import type { Request, Response } from "express";
 import sendResponse from "../../utils/sendResponse";
 import { issueService } from "./issue.service";
+import type { IssueStatus, IssueType, SortIssues } from "../../types";
 
 const getAllIssues = async (req: Request, res: Response) => {
   try {
     const queryParams = {
-      sort: (req.query.sort as "newest" | "oldest") || "newest",
+      sort: (req.query.sort as SortIssues) || "newest",
       ...(req.query.type && {
-        type: req.query.type as "bug" | "feature_request",
+        type: req.query.type as IssueType,
       }),
       ...(req.query.status && {
-        status: req.query.status as "open" | "in_progress" | "resolved",
+        status: req.query.status as IssueStatus,
       }),
     };
     const result = await issueService.getIssuesFromDB(queryParams);
