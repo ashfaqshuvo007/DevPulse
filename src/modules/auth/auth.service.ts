@@ -1,11 +1,11 @@
 import { connectionPool } from "../../db";
 import { encrypt } from "../../utils/encrypt";
-import type { User } from "../../types";
 import bcrypt from "bcryptjs";
 import config from "../../config";
 import jwt from "jsonwebtoken";
+import type { IloginUser, IUser } from "./auth.interface";
 
-const loginUser = async (payload: { email: string; password: string }) => {
+const loginUser = async (payload: IloginUser) => {
   const { email, password } = payload;
   // Check if user exists
   const userDetails = await connectionPool.query(
@@ -39,7 +39,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
   return { token, user };
 };
 
-const registerUserIntoDB = async (payload: User) => {
+const registerUserIntoDB = async (payload: IUser) => {
   const { name, email, password, role } = payload;
   const encryptedPassword = await encrypt(password, 10);
 
