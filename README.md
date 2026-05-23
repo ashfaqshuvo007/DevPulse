@@ -1,4 +1,4 @@
-# 🚼 DevPulse – Assignment Requirements Specification
+# 🚼 DevPulse
 
 > Internal Tech Issue & Feature Tracker
 >
