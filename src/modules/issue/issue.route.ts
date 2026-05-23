@@ -5,11 +5,7 @@ import { USER_ROLES } from "../../types";
 
 const router = Router();
 
-router.get(
-  "/",
-  auth(USER_ROLES.contributor, USER_ROLES.maintainer),
-  issueController.getAllIssues,
-);
+router.get("/", issueController.getAllIssues);
 router.get("/:id", issueController.getSingleIssue);
 
 router.post(
@@ -17,8 +13,12 @@ router.post(
   auth(USER_ROLES.contributor, USER_ROLES.maintainer),
   issueController.createIssue,
 );
-router.patch("/:id", issueController.updateIssue);
+router.patch(
+  "/:id",
+  auth(USER_ROLES.contributor, USER_ROLES.maintainer),
+  issueController.updateIssue,
+);
 
-router.delete("/:id", issueController.deleteIssue);
+router.delete("/:id", auth(USER_ROLES.maintainer), issueController.deleteIssue);
 
 export const issueRouter = router;

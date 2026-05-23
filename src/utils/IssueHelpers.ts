@@ -1,3 +1,4 @@
+import type { QueryResult } from "pg";
 import { connectionPool } from "../db";
 import type { IUser } from "../modules/auth/auth.interface";
 import type { IIssue } from "../modules/issue/issue.interface";
@@ -66,8 +67,33 @@ const attachReportersToIssues = (
   });
 };
 
+// Helper: Curate Response
+const curateIssuesResponse = async (
+  issues: QueryResult<any>,
+  limit: number = 0,
+) => {
+  if (issues.rows.length === 0) {
+    return issues;
+  }
+
+  const reporterIds = [
+    ...new Set(issues.rows.map((issue: any) => issue.reporter_id)),
+  ];
+
+  const reporterMap = await issueHelpers.fetchReporters(reporterIds);
+  const issuesWithReporters = issueHelpers.attachReportersToIssues(
+    issues.rows,
+    reporterMap,
+  );
+  if (limit === 1) {
+    return issuesWithReporters[0];
+  }
+  return issuesWithReporters;
+};
+
 export const issueHelpers = {
   buildFilterQuery,
   fetchReporters,
   attachReportersToIssues,
+  curateIssuesResponse,
 };

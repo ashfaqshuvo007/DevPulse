@@ -2,10 +2,10 @@ import type { Response } from "express";
 
 type TResponse<T> = {
   statusCode: number;
-  message: string;
+  message?: string;
   success: boolean;
-  data?: T;
-  error?: any;
+  data?: T | undefined;
+  errors?: any;
 };
 
 const sendResponse = <T>(res: Response, data: TResponse<T>) => {
@@ -13,7 +13,7 @@ const sendResponse = <T>(res: Response, data: TResponse<T>) => {
     success: data.success,
     message: data.message,
     data: data.data,
-    error: data.error,
+    errors: data.errors,
   });
 };
 

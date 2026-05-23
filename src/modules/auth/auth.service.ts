@@ -2,7 +2,7 @@ import { connectionPool } from "../../db";
 import { encrypt } from "../../utils/encrypt";
 import bcrypt from "bcryptjs";
 import config from "../../config";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import type { IloginUser, IUser } from "./auth.interface";
 
 const loginUser = async (payload: IloginUser) => {
@@ -52,7 +52,48 @@ const registerUserIntoDB = async (payload: IUser) => {
   return result;
 };
 
+// Authorization: Check if user can update resources
+const canUserUpdateResource = async (
+  resourceId: string,
+  loggedInUser: JwtPayload,
+  resourceTable: string,
+  ownerColumn: string,
+) => {
+  const userRole = loggedInUser?.role;
+  const userId = loggedInUser?.id;
+  const resourceType = resourceTable.slice(0, -1);
+  if (userRole === "maintainer") {
+    return true;
+  }
+
+  if (userRole === "contributor") {
+    const resource = await connectionPool.query(
+      `SELECT ${ownerColumn}, status FROM ${resourceTable} WHERE id = $1`,
+      [resourceId],
+    );
+    if (resource.rows.length === 0) {
+      throw new Error(
+        `${resourceType.toUpperCase} with id: ${resourceId} not found`,
+      );
+    }
+    if (resource.rows[0][ownerColumn] !== userId) {
+      throw new Error(
+        `Unauthorized to update ${resourceType} with id: ${resourceId}`,
+      );
+    }
+
+    if (resource.rows[0].status !== "open") {
+      throw new Error(
+        `Unauthorized to update ${resourceType} without status: 'open'`,
+      );
+    }
+
+    return true;
+  }
+  throw new Error("Unauthorized role");
+};
 export const authService = {
   loginUser,
   registerUserIntoDB,
+  canUserUpdateResource,
 };
