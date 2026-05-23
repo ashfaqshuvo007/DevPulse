@@ -3,6 +3,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { connectionPool } from "../db";
 import type { ROLES } from "../types";
+import sendResponse from "../utils/sendResponse";
 
 export const auth = (...roles: ROLES[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -11,9 +12,10 @@ export const auth = (...roles: ROLES[]) => {
 
       //* Check client sends token in header
       if (!token) {
-        res.status(401).json({
+        sendResponse(res, {
+          statusCode: 401,
           success: false,
-          message: "Unauthorized Access!",
+          message: "Unauthorized access",
           data: {},
         });
       }
@@ -29,9 +31,10 @@ export const auth = (...roles: ROLES[]) => {
 
       //* Check user existss
       if (userData.rows.length === 0) {
-        res.status(404).json({
+        sendResponse(res, {
+          statusCode: 404,
           success: false,
-          message: "User not found!",
+          message: "User not found",
           data: {},
         });
       }
@@ -39,9 +42,10 @@ export const auth = (...roles: ROLES[]) => {
 
       //* Check roles
       if (roles.length && !roles.includes(user?.role)) {
-        res.status(403).json({
+        sendResponse(res, {
+          statusCode: 403,
           success: false,
-          message: "Access Forbidden with your role!",
+          message: "Access forbidden with your role.",
           data: {},
         });
       }
