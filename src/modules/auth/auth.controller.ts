@@ -5,15 +5,24 @@ import sendResponse from "../../utils/sendResponse";
 const login = async (req: Request, res: Response) => {
   try {
     const result = await authService.loginUser(req.body);
+    const { refreshToken } = result;
     delete result.user.password;
 
-    res.status(200).json({
+    res.cookie("refreshToken", refreshToken, {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Login successful",
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       data: error,
@@ -42,7 +51,35 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
+const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.generateRefreshToken(
+      req.cookies.refreshToken,
+    );
+    res.cookie("refreshToken", refreshToken, {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Access token generated",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+      data: error,
+    });
+  }
+};
+
 export const authController = {
   login,
   register,
+  refreshToken,
 };

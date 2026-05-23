@@ -36,7 +36,13 @@ const loginUser = async (payload: IloginUser) => {
   const token = jwt.sign(userPayload, config.jwtSecret as string, {
     expiresIn: "1d",
   });
-  return { token, user };
+
+  //Refresh token
+  const refreshToken = jwt.sign(userPayload, config.refreshSecret as string, {
+    expiresIn: "10d",
+  });
+
+  return { token, refreshToken, user };
 };
 
 const registerUserIntoDB = async (payload: IUser) => {
@@ -92,8 +98,47 @@ const canUserUpdateResource = async (
   }
   throw new Error("Unauthorized role");
 };
+
+const generateRefreshToken = async (token: string) => {
+  //* Check refresh token in cookies
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
+
+  const decodedToken = jwt.verify(
+    token as string,
+    config.refreshSecret as string,
+  ) as JwtPayload;
+
+  const userData = await connectionPool.query(
+    `SELECT * FROM users WHERE id=$1`,
+    [decodedToken.id],
+  );
+
+  //* Check user existss
+  if (userData.rows.length === 0) {
+    throw new Error("User not Found");
+  }
+
+  const user = userData.rows[0];
+  delete user.password;
+
+  const userPayload = {
+    id: user.id,
+    name: user.name,
+    role: user.role,
+  };
+  // if match found generate token with TTL
+  const accessToken = jwt.sign(userPayload, config.jwtSecret as string, {
+    expiresIn: "1d",
+  });
+
+  return { accessToken };
+};
+
 export const authService = {
   loginUser,
   registerUserIntoDB,
   canUserUpdateResource,
+  generateRefreshToken,
 };
