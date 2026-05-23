@@ -7,9 +7,9 @@ const login = async (req: Request, res: Response) => {
     const result = await authService.loginUser(req.body);
     delete result.user.password;
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Login Successful!",
+      message: "Login successful",
       data: result,
     });
   } catch (error: any) {
@@ -29,7 +29,7 @@ const register = async (req: Request, res: Response) => {
     sendResponse(res, {
       statusCode: 201,
       success: true,
-      message: "User registered successfully!",
+      message: "User registered successfully",
       data: result.rows[0],
     });
   } catch (error: any) {

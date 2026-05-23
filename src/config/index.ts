@@ -7,7 +7,7 @@ dotenv.config({
 
 const config = {
   port: process.env.PORT,
-  apiUrl: `/${process.env.BASE_URL}/${process.env.API_VERSION}`,
+  apiUrl: `/${process.env.BASE_URL}`,
   dbConnectionString: process.env.DB_URL,
   jwtSecret: process.env.JWT_SECRET,
 };
