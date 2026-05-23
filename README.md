@@ -10,7 +10,7 @@
 
 ```
 ✅ GitHub Repo (Public):      https://github.com/ashfaqshuvo007/DevPulse
-✅ Live Deployment (Public):  <https://devpulse-api.vercel.app>
+✅ Live Deployment (Public):  https://devpulse-api-one.vercel.app
 ```
 
 ---
@@ -115,7 +115,7 @@ The API will be available at `http://localhost:<Your-PORT-FROM-ENV>/api/`
 
 ---
 
-## 🗄️ Database Schema Design
+## 🗄️ Database Schema
 
 ### Table 1: `users`
 
